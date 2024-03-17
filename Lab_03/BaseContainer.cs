@@ -8,7 +8,7 @@ public class BaseContainer : IContainer
     public double OwnWeight { get; }
     public double Depth { get; }
     public string SerialNumber { get; }
-    private double CurrentLoad { get; set; }
+    protected double CurrentLoad { get; set; }
 
     public BaseContainer(double maxLoad, double height, double ownWeight, double depth, string containerType)
     {
@@ -19,7 +19,7 @@ public class BaseContainer : IContainer
         SerialNumber = $"KON-{containerType}-{++_counter}";
     }
 
-    public void Load(double loadWeight)
+    public virtual void Load(double loadWeight)
     {
         if (CurrentLoad + loadWeight > MaxLoad)
         {
