@@ -28,7 +28,7 @@ public class BaseContainer : IContainer
         CurrentLoad += loadWeight;
     }
 
-    public void Unload()
+    public virtual void Unload()
     {
         CurrentLoad = 0;
     }
