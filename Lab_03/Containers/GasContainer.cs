@@ -1,4 +1,6 @@
-namespace Lab_03;
+using Lab_03.Interfaces;
+
+namespace Lab_03.Containers;
 
 public class GasContainer : BaseContainer, IHazardNotifier
 {
@@ -8,12 +10,19 @@ public class GasContainer : BaseContainer, IHazardNotifier
 
     public override void Unload()
     {
-        CurrentLoad = CurrentLoad * 0.05;
+        CurrentLoad *= 0.05;
     }
 
 
     public void NotifyHazard()
     {
         Console.WriteLine($"Hazard situation in container {SerialNumber}!");
+    }
+
+    public override string ToString()
+    {
+        return $"Container: {SerialNumber}\n" +
+               $"Container Type: Gas\n" +
+               $"Load: {CurrentLoad} out of {MaxLoad}\n";
     }
 }

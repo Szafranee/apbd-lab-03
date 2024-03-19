@@ -1,4 +1,6 @@
-namespace Lab_03;
+using Lab_03.Interfaces;
+
+namespace Lab_03.Containers;
 
 public class CoolingContainer : BaseContainer, IHazardNotifier
 {
@@ -38,5 +40,14 @@ public class CoolingContainer : BaseContainer, IHazardNotifier
     public void NotifyHazard()
     {
         Console.WriteLine($"Hazard situation in container {SerialNumber}!");
+    }
+
+    public override string ToString()
+    {
+        return $"Container: {SerialNumber}\n" +
+               $"Container Type: Cooling\n" +
+               $"Load: {CurrentLoad} out of {MaxLoad}\n" +
+               $"Product Type: {productType}\n" +
+               $"Temperature: {currTemperature}°C\n";
     }
 }

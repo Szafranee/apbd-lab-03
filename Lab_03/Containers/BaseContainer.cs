@@ -1,4 +1,6 @@
-namespace Lab_03;
+using Lab_03.Interfaces;
+
+namespace Lab_03.Containers;
 
 public class BaseContainer : IContainer
 {
@@ -8,7 +10,7 @@ public class BaseContainer : IContainer
     public double OwnWeight { get; }
     public double Depth { get; }
     public string SerialNumber { get; }
-    protected double CurrentLoad { get; set; }
+    public double CurrentLoad { get; set; }
 
     public BaseContainer(double maxLoad, double height, double ownWeight, double depth, string containerType)
     {
@@ -31,5 +33,12 @@ public class BaseContainer : IContainer
     public virtual void Unload()
     {
         CurrentLoad = 0;
+    }
+
+    public override string ToString()
+    {
+        return $"Container: {SerialNumber}\n" +
+               $"Container Type: Base\n" +
+               $"Load: {CurrentLoad} out of {MaxLoad}\n";
     }
 }

@@ -1,4 +1,4 @@
-namespace Lab_03;
+namespace Lab_03.Interfaces;
 
 public interface IHazardNotifier
 {

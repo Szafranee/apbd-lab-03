@@ -1,4 +1,6 @@
-namespace Lab_03;
+using Lab_03.Interfaces;
+
+namespace Lab_03.Containers;
 
 public class LiquidContainer : BaseContainer, IHazardNotifier
 {
@@ -24,5 +26,13 @@ public class LiquidContainer : BaseContainer, IHazardNotifier
     public void NotifyHazard()
     {
         Console.WriteLine($"Hazard situation in container {SerialNumber}!");
+    }
+
+    public override string ToString()
+    {
+        return $"Container: {SerialNumber}\n" +
+               $"Container Type: Liquid\n" +
+               $"Load: {CurrentLoad} out of {MaxLoad}\n" +
+               $"Dangerous Load: {IsDangerousLoad}\n";
     }
 }
