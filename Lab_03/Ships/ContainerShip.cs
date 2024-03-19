@@ -1,6 +1,6 @@
 using Lab_03.Containers;
 
-namespace Lab_03;
+namespace Lab_03.Ships;
 
 
 public class ContainerShip(string name, double maxSpeed, int maxContainers, double maxLoad)
