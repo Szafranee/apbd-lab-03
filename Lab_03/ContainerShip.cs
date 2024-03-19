@@ -3,10 +3,10 @@ using Lab_03.Containers;
 namespace Lab_03;
 
 
-public class ContainerShip(double maxSpeed, int maxContainers, double maxLoad, string name)
+public class ContainerShip(string name, double maxSpeed, int maxContainers, double maxLoad)
 {
     public string Name { get; } = name;
-    public double MaxSpeed { get; } = maxSpeed;
+    private double MaxSpeed { get; } = maxSpeed;
     private int MaxContainers { get; } = maxContainers;
     private double MaxLoad { get; } = maxLoad * 1000;
     public List<BaseContainer> Containers { get; } = [];

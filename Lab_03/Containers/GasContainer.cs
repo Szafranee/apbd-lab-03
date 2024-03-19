@@ -4,7 +4,7 @@ namespace Lab_03.Containers;
 
 public class GasContainer : BaseContainer, IHazardNotifier
 {
-    public GasContainer(double maxLoad, double height, double ownWeight, double depth) : base(maxLoad, height, ownWeight, depth, "G")
+    public GasContainer(double maxLoad, double ownWeight, double height,  double depth) : base(maxLoad,  ownWeight, height, depth, "G")
     {
     }
 

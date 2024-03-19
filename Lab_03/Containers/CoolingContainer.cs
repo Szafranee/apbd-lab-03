@@ -4,11 +4,11 @@ namespace Lab_03.Containers;
 
 public class CoolingContainer : BaseContainer, IHazardNotifier
 {
-    public string productType { get; }
-    public double minTemperature { get; }
-    public double currTemperature { get; private set; }
+    private string productType { get; }
+    private double minTemperature { get; }
+    private double currTemperature { get; set; }
 
-    public CoolingContainer(double maxLoad, double height, double ownWeight, double depth, string productType, double minTemperature) : base(maxLoad, height, ownWeight, depth, "C")
+    public CoolingContainer(double maxLoad,  double ownWeight, double height, double depth, string productType, double minTemperature) : base(maxLoad,  ownWeight, height, depth, "C")
     {
         this.productType = productType;
         this.minTemperature = minTemperature;

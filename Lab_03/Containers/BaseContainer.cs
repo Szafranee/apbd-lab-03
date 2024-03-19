@@ -6,17 +6,17 @@ public class BaseContainer : IContainer
 {
     private static int _counter = 0;
     public double MaxLoad { get; }
-    public double Height { get; }
     public double OwnWeight { get; }
+    public double Height { get; }
     public double Depth { get; }
     public string SerialNumber { get; }
     public double CurrentLoad { get; set; }
 
-    public BaseContainer(double maxLoad, double height, double ownWeight, double depth, string containerType)
+    public BaseContainer(double maxLoad, double ownWeight, double height, double depth, string containerType)
     {
         MaxLoad = maxLoad;
-        Height = height;
         OwnWeight = ownWeight;
+        Height = height;
         Depth = depth;
         SerialNumber = $"KON-{containerType}-{++_counter}";
     }

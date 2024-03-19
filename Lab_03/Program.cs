@@ -14,7 +14,6 @@ public class Program
         Console.WriteLine("==================================================");
         Console.WriteLine("Hello! Welcome to the container management system.");
         Console.WriteLine("==================================================");
-        Console.WriteLine();
         List<ContainerShip> containerShips = [];
         List<BaseContainer> containersInStorage = [];
 
@@ -31,12 +30,14 @@ public class Program
             { 9, "Unload a container from a ship" },
             { 10, "Unload all containers from a ship" },
             { 11, "Move a container to another ship" },
+            { 12, "Get list of containers on a ship" },
             { 0, "Exit" }
         };
-        List<int> actionsAllowed = [];
+        List<int> actionsAllowed = [0, 1, 2];
 
         while (true)
         {
+            Console.WriteLine();
             Console.WriteLine("----------------------------------------");
             var containerShipsCount = containerShips.Count;
             var containersInStorageCount = containersInStorage.Count;
@@ -76,32 +77,43 @@ public class Program
             actionsAllowed = containerShipsCount switch
             {
                 0 when containersInStorageCount == 0 => [1, 2, 0],
-                1 when containersInStorageCount == 0 => [1, 2, 6, 9, 10, 0],
+                1 when containersInStorageCount == 0 => [1, 2, 6, 9, 10, 12, 0],
                 0 when containersInStorageCount == 1 => [1, 2, 3, 4, 5, 0],
-                1 when containersInStorageCount == 1 => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0],
-                > 1 when containersInStorageCount == 0 => [1, 2, 6, 9, 10, 11, 0],
+                1 when containersInStorageCount == 1 => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 0],
                 0 when containersInStorageCount > 1 => [1, 2, 3, 4, 5, 0],
-                > 1 when containersInStorageCount == 1 => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0],
-                1 when containersInStorageCount > 1 => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0],
-                > 1 when containersInStorageCount > 1 => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0],
+                > 1 when containersInStorageCount == 0 => [1, 2, 6, 9, 10, 11, 12, 0],
+                > 1 when containersInStorageCount == 1 => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0],
+                1 when containersInStorageCount > 1 => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 0],
+                > 1 when containersInStorageCount > 1 => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0],
                 _ => actionsAllowed
             };
 
-            foreach (var action in actionsAllowed)
+            // list of possible actions printing
+            // print only allowed actions but enumerate them from 1, but also print 0 as exit at the end
+            for (var i = 1; i < actionsAllowed.Count; i++)
             {
-                Console.WriteLine($"{action}. {actions[action]}");
+                Console.WriteLine($"{i}. {actions[actionsAllowed[i-1]]}");
             }
+            Console.WriteLine("0. Exit");
 
             Console.WriteLine("----------------------------------------");
 
             Console.WriteLine("Please enter the number of the action you want to perform:");
+            int inputNumber;
             int actionNumber;
 
             while (true)
             {
                 try
                 {
-                    actionNumber = int.Parse(Console.ReadLine());
+                    inputNumber = int.Parse(Console.ReadLine());
+                    // if inputNumber is 0, then choose the last action which is always exit
+                    if (inputNumber == 0)
+                    {
+                        inputNumber = actionsAllowed.Count;
+                    }
+
+                    actionNumber = actionsAllowed[inputNumber - 1];
                     if (actionNumber > actions.Count - 1 || actionNumber < 0)
                     {
                         throw new FormatException();
@@ -138,7 +150,6 @@ public class Program
                     {
                         container.Unload();
                     }
-
                     break;
                 case 5:
                     RemoveContainer(containersInStorage);
@@ -161,72 +172,15 @@ public class Program
                 case 11:
                     MoveContainerToAnotherShip(containerShips, containersInStorage);
                     break;
+                case 12:
+                    GetContainersOnShip(containerShips);
+                    break;
                 case 0:
                     Environment.Exit(0);
+                    Console.WriteLine("Goodbye!");
                     break;
             }
         }
-    }
-
-    private static void MoveContainerToAnotherShip(List<ContainerShip> containerShips, List<BaseContainer> containersInStorage)
-    {
-        Console.WriteLine("Please enter the name of the ship you want to move the container from:");
-        var shipNameFrom = Console.ReadLine();
-        var shipFrom = containerShips.Find(s => s.Name == shipNameFrom);
-        if (shipFrom == null)
-        {
-            Console.WriteLine("The ship with the given name does not exist.");
-            return;
-        }
-
-        Console.WriteLine("Please enter the name of the ship you want to move the container to:");
-        var shipNameTo = Console.ReadLine();
-        var shipTo = containerShips.Find(s => s.Name == shipNameTo);
-        if (shipTo == null)
-        {
-            Console.WriteLine("The ship with the given name does not exist.");
-            return;
-        }
-
-        Console.WriteLine($"{shipNameFrom} containers:");
-        Console.WriteLine(shipFrom.Containers);
-        Console.WriteLine();
-
-        Console.WriteLine("Please enter the serial number of the container you want to move:");
-        var serialNumber = Console.ReadLine();
-        var containerToMove = shipFrom.Containers.Find(c => c.SerialNumber == serialNumber);
-        if (containerToMove == null)
-        {
-            Console.WriteLine("The container with the given serial number does not exist.");
-            return;
-        }
-
-        try
-        {
-            shipFrom.Containers.Remove(containerToMove);
-            shipTo.LoadContainers(containerToMove);
-            Console.WriteLine($"The container {serialNumber} has been moved from the ship {shipNameFrom} to the ship {shipNameTo}.");
-        }
-        catch (InvalidOperationException e)
-        {
-            Console.WriteLine(e.Message);
-        }
-    }
-
-    private static void UnloadAllContainersFromShip(List<ContainerShip> containerShips, List<BaseContainer> containersInStorage)
-    {
-        Console.WriteLine("Please enter the name of the ship you want to unload the containers from:");
-        var shipName = Console.ReadLine();
-        var shipToUnload = containerShips.Find(s => s.Name == shipName);
-        if (shipToUnload == null)
-        {
-            Console.WriteLine("The ship with the given name does not exist.");
-            return;
-        }
-
-        containersInStorage.AddRange(shipToUnload.Containers);
-        shipToUnload.UnloadAllContainers();
-        Console.WriteLine($"All containers have been unloaded from the ship {shipName}.");
     }
 
     private static void AddContainerShip(List<ContainerShip> containerShips)
@@ -248,10 +202,10 @@ public class Program
                 var shipMaxLoad = double.Parse(Console.ReadLine() ?? throw new FormatException());
 
                 Console.WriteLine("Do you want to add this ship to the system? (y/n)");
-                Console.WriteLine($"Name: {shipName},\n" +
-                                  $"max speed: {shipMaxSpeed} knots,\n" +
-                                  $"max containers: {shipMaxContainers},\n" +
-                                  $"max load: {shipMaxLoad} tonnes");
+                Console.WriteLine($"Name: {shipName}\n" +
+                                  $"Max speed: {shipMaxSpeed} knots\n" +
+                                  $"Max containers: {shipMaxContainers}\n" +
+                                  $"Max load: {shipMaxLoad} tonnes");
 
                 while (true)
                 {
@@ -261,7 +215,7 @@ public class Program
                         if (addShip == "y")
                         {
                             containerShips.Add(
-                                new ContainerShip(shipMaxSpeed, shipMaxContainers, shipMaxLoad, shipName));
+                                new ContainerShip(shipName, shipMaxSpeed, shipMaxContainers, shipMaxLoad));
                             Console.WriteLine($"The ship {shipName} has been added to the system.");
                             break;
                         }
@@ -314,11 +268,11 @@ public class Program
                 Console.WriteLine("Please enter the maximum load of the container (in tonnes):");
                 var containerMaxLoad = double.Parse(Console.ReadLine() ?? throw new FormatException());
 
+                var containerOwnWeight = double.Parse(Console.ReadLine() ?? throw new FormatException());
+                Console.WriteLine("Please enter the own weight of the container (in tonnes):");
+
                 Console.WriteLine("Please enter the height of the container (in meters):");
                 var containerHeight = double.Parse(Console.ReadLine() ?? throw new FormatException());
-
-                Console.WriteLine("Please enter the own weight of the container (in tonnes):");
-                var containerOwnWeight = double.Parse(Console.ReadLine() ?? throw new FormatException());
 
                 Console.WriteLine("Please enter the depth of the container (in meters):");
                 var containerDepth = double.Parse(Console.ReadLine() ?? throw new FormatException());
@@ -335,8 +289,8 @@ public class Program
                                 containersInStorage.Add(
                                     new LiquidContainer(
                                         containerMaxLoad,
-                                        containerHeight,
                                         containerOwnWeight,
+                                        containerHeight,
                                         containerDepth,
                                         isDangerousLoad
                                     )
@@ -355,8 +309,8 @@ public class Program
                         containersInStorage.Add(
                             new GasContainer(
                                 containerMaxLoad,
-                                containerHeight,
                                 containerOwnWeight,
+                                containerHeight,
                                 containerDepth
                             )
                         );
@@ -370,8 +324,8 @@ public class Program
                         containersInStorage.Add(
                             new CoolingContainer(
                                 containerMaxLoad,
-                                containerHeight,
                                 containerOwnWeight,
+                                containerHeight,
                                 containerDepth,
                                 productType,
                                 minTemperature
@@ -427,6 +381,8 @@ public class Program
 
     private static void RemoveContainerShip(List<ContainerShip> containerShips)
     {
+        PrintShips(containerShips);
+
         Console.WriteLine("Please enter the name of the container ship you want to remove:");
         var shipName = Console.ReadLine();
         var shipToRemove = containerShips.Find(s => s.Name == shipName);
@@ -448,6 +404,8 @@ public class Program
 
     private static void LoadContainerOntoShip(List<ContainerShip> containerShips, List<BaseContainer> containersInStorage)
     {
+        PrintShips(containerShips);
+
         Console.WriteLine("Please enter the name of the ship you want to load the container onto:");
         var shipName = Console.ReadLine();
         var shipToLoad = containerShips.Find(s => s.Name == shipName);
@@ -480,6 +438,8 @@ public class Program
 
     private static void LoadAllContainersOntoShip(List<ContainerShip> containerShips, List<BaseContainer> containersInStorage)
     {
+        PrintShips(containerShips);
+
         Console.WriteLine("Please enter the name of the ship you want to load the containers onto:");
         var shipName = Console.ReadLine();
         var shipToLoad = containerShips.Find(s => s.Name == shipName);
@@ -507,6 +467,8 @@ public class Program
 
     private static void UnloadContainerFromShip(List<ContainerShip> containerShips, List<BaseContainer> containersInStorage)
     {
+        PrintShips(containerShips);
+
         Console.WriteLine("Please enter the name of the ship you want to unload the container from:");
         var shipName = Console.ReadLine();
         var shipToUnload = containerShips.Find(s => s.Name == shipName);
@@ -517,7 +479,7 @@ public class Program
         }
 
         Console.WriteLine($"{shipName} containers:");
-        Console.WriteLine(shipToUnload.Containers);
+        shipToUnload.Containers.ForEach(Console.WriteLine);
         Console.WriteLine();
 
         Console.WriteLine("Please enter the serial number of the container you want to unload:");
@@ -532,5 +494,100 @@ public class Program
         shipToUnload.Containers.Remove(containerToUnload);
         containersInStorage.Add(containerToUnload);
         Console.WriteLine($"The container {serialNumber} has been unloaded from the ship {shipName}.");
+    }
+
+    private static void UnloadAllContainersFromShip(List<ContainerShip> containerShips, List<BaseContainer> containersInStorage)
+    {
+        PrintShips(containerShips);
+
+        Console.WriteLine("Please enter the name of the ship you want to unload the containers from:");
+        var shipName = Console.ReadLine();
+        var shipToUnload = containerShips.Find(s => s.Name == shipName);
+        if (shipToUnload == null)
+        {
+            Console.WriteLine("The ship with the given name does not exist.");
+            return;
+        }
+
+        Console.WriteLine($"{shipName} containers:");
+        shipToUnload.Containers.ForEach(Console.WriteLine);
+        Console.WriteLine();
+
+        containersInStorage.AddRange(shipToUnload.Containers);
+        shipToUnload.UnloadAllContainers();
+        Console.WriteLine($"All containers have been unloaded from the ship {shipName}.");
+    }
+
+    private static void MoveContainerToAnotherShip(List<ContainerShip> containerShips, List<BaseContainer> containersInStorage)
+    {
+        PrintShips(containerShips);
+
+        Console.WriteLine("Please enter the name of the ship you want to move the container from:");
+        var shipNameFrom = Console.ReadLine();
+        var shipFrom = containerShips.Find(s => s.Name == shipNameFrom);
+        if (shipFrom == null)
+        {
+            Console.WriteLine("The ship with the given name does not exist.");
+            return;
+        }
+
+        Console.WriteLine("Please enter the name of the ship you want to move the container to:");
+        var shipNameTo = Console.ReadLine();
+        var shipTo = containerShips.Find(s => s.Name == shipNameTo);
+        if (shipTo == null)
+        {
+            Console.WriteLine("The ship with the given name does not exist.");
+            return;
+        }
+
+        Console.WriteLine($"{shipNameFrom} containers:");
+        Console.WriteLine(shipFrom.Containers);
+        Console.WriteLine();
+
+        Console.WriteLine("Please enter the serial number of the container you want to move:");
+        var serialNumber = Console.ReadLine();
+        var containerToMove = shipFrom.Containers.Find(c => c.SerialNumber == serialNumber);
+        if (containerToMove == null)
+        {
+            Console.WriteLine("The container with the given serial number does not exist.");
+            return;
+        }
+
+        try
+        {
+            shipFrom.Containers.Remove(containerToMove);
+            shipTo.LoadContainers(containerToMove);
+            Console.WriteLine($"The container {serialNumber} has been moved from the ship {shipNameFrom} to the ship {shipNameTo}.");
+        }
+        catch (InvalidOperationException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+
+    private static void GetContainersOnShip(List<ContainerShip> containerShips)
+    {
+        PrintShips(containerShips);
+
+        Console.WriteLine("Please enter the name of the ship you want to get the list of containers from:");
+
+        var shipName = Console.ReadLine();
+        var ship = containerShips.Find(s => s.Name == shipName);
+        if (ship == null)
+        {
+            Console.WriteLine("The ship with the given name does not exist.");
+            return;
+        }
+
+        Console.WriteLine($"{shipName} containers:\n");
+        ship.Containers.ForEach(Console.WriteLine);
+    }
+
+    private static void PrintShips(List<ContainerShip> containerShips)
+    {
+        Console.WriteLine("==================================================");
+        Console.WriteLine("Available container ships:");
+        containerShips.ForEach(s => Console.WriteLine(s.Name));
+        Console.WriteLine("==================================================");
     }
 }
