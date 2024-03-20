@@ -12,9 +12,9 @@ public class Program
 
     private static void Menu()
     {
-        Console.WriteLine("==================================================");
-        Console.WriteLine("Hello! Welcome to the container management system.");
-        Console.WriteLine("==================================================");
+        Console.WriteLine("====================================================");
+        Console.WriteLine(" Hello! Welcome to the container management system.");
+        Console.WriteLine("====================================================");
         List<ContainerShip> containerShips = [];
         List<BaseContainer> containersInStorage = [];
 
