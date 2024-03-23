@@ -38,11 +38,13 @@ public class Program
 
         while (true)
         {
-            Console.WriteLine();
-            Console.WriteLine("----------------------------------------");
             var containerShipsCount = containerShips.Count;
             var containersInStorageCount = containersInStorage.Count;
 
+            Console.WriteLine();
+            Console.WriteLine("----------------------------------------");
+
+            // Container ships list printing
             if (containerShipsCount == 0)
             {
                 Console.WriteLine("No container ships available.");
@@ -56,6 +58,7 @@ public class Program
                 }
             }
 
+            // Containers list printing
             if (containersInStorageCount == 0)
             {
                 Console.WriteLine("No containers available.");
@@ -74,6 +77,7 @@ public class Program
 
             Console.WriteLine("----------------------------------------");
             Console.WriteLine("Possible actions:");
+
             // Rider zamienił if elsy na to:
             actionsAllowed = containerShipsCount switch
             {
@@ -100,14 +104,13 @@ public class Program
             Console.WriteLine("----------------------------------------");
 
             Console.WriteLine("Please enter the number of the action you want to perform:");
-            int inputNumber;
             int actionNumber;
 
             while (true)
             {
                 try
                 {
-                    inputNumber = int.Parse(Console.ReadLine());
+                    var inputNumber = int.Parse(Console.ReadLine());
                     // if inputNumber is 0, then choose the last action which is always exit
                     if (inputNumber == 0)
                     {
@@ -253,7 +256,9 @@ public class Program
                 Console.WriteLine("Please enter the type of the container (liquid (l), gas (g), cooling (c)):");
                 var containerType = Console.ReadLine();
 
-                containerType = containerType.ToLower() switch
+                containerType = containerType?.ToLower();
+
+                containerType = containerType switch
                 {
                     "liquid" => "l",
                     "gas" => "g",
